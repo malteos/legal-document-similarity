@@ -45,31 +45,6 @@ class Experiment(object):
             self.pretty_name = name
 
     def load_data(self):
-        """
-
-        Required input files in ./data:
-
-        ./ocb
-        - texts.json.gz
-        - cits.json
-        - doc_id2idx.json
-        - idx2doc_id.json
-        - gold.csv
-
-        ./wikisource
-        - cl_dump.pickle.gz
-        - gold.csv
-
-        Word vectors:
-        - /glove.6B/glove.6B.300d.w2vformat.txt
-        - ocb_and_wikisource.w2v.txt.gz
-        - /fasttext/wiki-news-300d-1M.vec
-        - ocb_and_wikisource.fasttext.w2v.txt.gz
-
-        tar -cvzf wikisource.tar.gz docs_without_text.json doc_id2idx.json idx2doc_id.json texts.json.gz gold.csv meta.csv
-        tar -cvzf ocb.tar.gz cits.json doc_id2idx.json idx2doc_id.json texts.json.gz gold.csv meta.csv
-
-        """
 
         if self.name == 'ocb':
             self.exp_dir = self.data_dir / 'ocb'
@@ -94,14 +69,8 @@ class Experiment(object):
             self.exp_dir = self.data_dir / 'wikisource'
             self.models_dir = Path('./models/wikisource')
 
-            docs = json.load(open(self.exp_dir / 'docs_without_text.json', 'r'))
-            doc_id2idx = json.load(open(self.exp_dir / 'doc_id2idx.json', 'r'))
-            idx2doc_id = json.load(open(self.exp_dir / 'idx2doc_id.json', 'r'))
-
-            self.texts = json.load(open(self.exp_dir / 'texts.json.gz', 'r'))
-
-            # with open(self.exp_dir / 'cl_dump.pickle.gz', 'rb') as f:
-            #     docs, idx2doc_id, doc_id2idx, self.texts, _, _, _ = pickle.load(f)
+            with open(self.exp_dir / 'cl_dump.pickle.gz', 'rb') as f:
+                docs, idx2doc_id, doc_id2idx, self.texts, _, _, _ = pickle.load(f)
 
             # Convert doc_ids to str
             self.idx2doc_id = {idx: str(doc_id) for idx, doc_id in idx2doc_id.items()}
@@ -136,7 +105,7 @@ class Experiment(object):
         ###
         self.w2v_paths = {
             'glove': self.env['datasets_dir'] + '/glove.6B/glove.6B.300d.w2vformat.txt',
-            'glove_custom': self.data_dir / 'ocb_and_wikisource.w2v.txt.gz',
+            'glove_custom': self.data_dir / 'ocb_and_wikisource.glove.w2v.txt.gz',
             'fasttext': self.env['datasets_dir'] + '/fasttext/wiki-news-300d-1M.vec',
             'fasttext_custom': self.data_dir / 'ocb_and_wikisource.fasttext.w2v.txt.gz',
         }

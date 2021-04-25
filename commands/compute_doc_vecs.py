@@ -129,7 +129,14 @@ def compute_doc_vecs(experiment, data_dir='./data', workers=None, override=False
         rs.save_word2vec_format(models_dir / 'bert-base-cased.w2v.txt', override=override)
 
     # All "MEAN" transformers
-    for tf_name in ['bert-base-cased', 'bert-large-cased', 'roberta-base', 'roberta-large', 'legal-bert']:
+    for tf_name in [
+        'bert-base-cased',
+        'bert-large-cased',
+        'roberta-base',
+        'roberta-large',
+        'legal-bert',
+        'aueb-legal-bert-base-uncased',
+        ]:
         out_fp = models_dir / f'{tf_name}_mean.w2v.txt'
         if override or not os.path.exists(out_fp):
             rs = TransformerRecSys(model_name_or_path=env['bert_dir'] + '/' + tf_name,

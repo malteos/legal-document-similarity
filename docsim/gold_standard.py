@@ -1,4 +1,7 @@
+import json
 import logging
+import os
+from collections import defaultdict
 from typing import Dict
 
 import pandas as pd
@@ -19,6 +22,8 @@ class GoldStandard(object):
     
     _doc_ids = set()
     _results = []
+
+    ret_docs_by_system_and_seed = None
     
 
     """
@@ -40,7 +45,7 @@ class GoldStandard(object):
 
         return self._doc_ids
 
-    def evaluate(self, systems: Dict[str, RecSys], include_seeds: set=None, show_warning=False, show_progress=False, tqdm_notebook=False) -> DataFrame:
+    def evaluate(self, systems: Dict[str, RecSys], include_seeds: set=None, show_warning=False, show_progress=False, tqdm_notebook=False, cache_dir: str = None) -> DataFrame:
         """
 
         systems = {
@@ -51,6 +56,7 @@ class GoldStandard(object):
             'Poincare': poincare,
         }
 
+        :param cache_dir: Store retrieved recommendations in this directory for each system
         :param include_seeds: Seed ids must be part of this set
         :param systems:
         :return: DataFrame
@@ -73,7 +79,27 @@ class GoldStandard(object):
                 grouped_by = tqdm.tqdm_notebook(grouped_by, total=len(grouped_by))
             else:
                 grouped_by = tqdm.tqdm(grouped_by, total=len(grouped_by))
-        
+
+        # Load cache
+        cache = {}
+
+        if cache_dir:
+            if os.path.exists(cache_dir):
+                # Cache for each system
+                for name, recsys in systems.items():
+                    fp = os.path.join(cache_dir, f'{name}.json')
+                    if os.path.exists(fp):
+                        cache[name] = json.load(open(fp))
+                    else:
+                        cache[name] = {}
+
+            else:
+                logger.info(f'Creating new cache dir: {cache_dir}')
+                os.makedirs(cache_dir)
+
+        # Track coverage
+        self.ret_docs_by_system_and_seed = {n: defaultdict(list) for n in systems}
+
         for seed_id, gp in grouped_by:
             # Evaluate for each seed
             rel_docs = gp[self.target_col].values.tolist()
@@ -86,8 +112,21 @@ class GoldStandard(object):
             # Get results for each system
             for name, recsys in systems.items():
                 try:
-                    ret_docs = recsys.retrieve_recommendations(seed_id)
+                    # Load from cache if possible
+                    if name in cache and seed_id in cache[name]:
+                        ret_docs = cache[name][seed_id]
+                    else:
+                        # no cache
+                        ret_docs = recsys.retrieve_recommendations(seed_id)
+
+                        if name not in cache:
+                            cache[name] = {}
+                            
+                        cache[name][seed_id] = ret_docs
+
                     rel_ret_docs_count = len(set(ret_docs) & set(rel_docs))
+
+                    self.ret_docs_by_system_and_seed[name][seed_id] = ret_docs  # Track coverage
 
                     result[f'{name}_ret'] = len(ret_docs)
                     result[f'{name}_rel'] = rel_ret_docs_count
@@ -120,10 +159,20 @@ class GoldStandard(object):
 
             self._results.append(result)
 
+        # Save cache
+        if cache_dir:
+            for name, recsys in systems.items():
+                if name in cache:
+                    fp = os.path.join(cache_dir, f'{name}.json')
+                    json.dump(cache[name], open(fp, 'w'))
+
+                    logger.info(f'Saving cache for "{name}" in {fp}')
+
         # Build data frame
         df = pd.DataFrame(self._results).set_index('seed_id')
 
         return df
+
 
 class LegalWikiSource(GoldStandard):
     pass

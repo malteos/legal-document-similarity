@@ -1,6 +1,6 @@
 # Legal Document Similarity
 
-Implementation, trained models and result data for the paper *Evaluating Document Representations for Content-based Legal Literature Recommendations* ([PDF on Arxiv](#TODO)). 
+Implementation, trained models and result data for the paper **Evaluating Document Representations for Content-based Legal Literature Recommendations** ([PDF on Arxiv](#TODO)). 
 The supplemental material is available for download under [GitHub Releases](https://github.com/malteos/legal-document-similarity/releases).
 
 The qualitative analysis is available as PDF in `/appendix`.
@@ -10,7 +10,7 @@ The qualitative analysis is available as PDF in `/appendix`.
 - Python 3.7
 - CUDA GPU (for Transformers)
 - Case Law Access Project API key (only for dataset construction)
-- Legal-BERT must be downloaded from [here](https://archive.data.jhu.edu/dataset.xhtml?persistentId=doi:10.7281/T1/N1X6I4).
+- JHU-Legal-BERT must be downloaded from [here](https://archive.data.jhu.edu/dataset.xhtml?persistentId=doi:10.7281/T1/N1X6I4).
 
 ## Installation
 
@@ -83,10 +83,8 @@ python cli.py compute_doc_vecs wikisource --override=1 --gpu 0 --data_dir=./data
 python cli.py compute_doc_vecs ocb --override=1 --gpu 0 --data_dir=./data
 
 # Download pretrained document vectors
-wget https://github.com/malteos/legal-document-similarity/releases/download/1.0/ocb_models.tar.gz
-wget https://github.com/malteos/legal-document-similarity/releases/download/1.0/wikisource_models.tar.gz
-tar -xvzf ocb_models.tar.gz
-tar -xvzf wikisource_models.tar.gz
+wget https://github.com/malteos/legal-document-similarity/releases/download/1.0/models.tar.gz
+tar -xvzf models.tar.gz
 ```
 
 ### Evaluation
@@ -110,7 +108,20 @@ If you are using our code, please cite [our paper](#TODO):
 
 ```bibtex
 @InProceedings{Ostendorff2021,
-
+  title = {{Evaluating Document Representations for Content-based Legal
+                  Literature Recommendations}},
+  author = {Malte Ostendorff and Elliott Ash and Terry Ruas and Bela
+                  Gipp and Julian Moreno-Schneider and Georg Rehm},
+  publisher = {},
+  editor = {},
+  booktitle = {The 18th International Conference on Artificial Intelligence
+                  and Law (ICAIL 2021)},
+  year = 2021,
+  note = {Accepted for publication},
+  keywords = {aip},
+  pages = {},
+  month = 6,
+  address = {Sao Paulo, Brasil},
 }
 ```
 

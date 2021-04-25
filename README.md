@@ -34,7 +34,7 @@ pip install -r requirements.txt
 
 ![Overall results](https://github.com/malteos/legal-document-similarity/raw/master/figures/table2.png)
 
-#### Jaccard index for similarity or diversity of two recom-mendation sets (average over all seeds from the two datasets):
+#### Jaccard index for similarity or diversity of two recommendation sets (average over all seeds from the two datasets):
 
 ![Overlap of results](https://github.com/malteos/legal-document-similarity/raw/master/figures/figure3.png)
 

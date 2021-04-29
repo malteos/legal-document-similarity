@@ -1,6 +1,6 @@
 # Legal Document Similarity
 
-Implementation, trained models and result data for the paper **Evaluating Document Representations for Content-based Legal Literature Recommendations** ([PDF on Arxiv](#TODO)). 
+Implementation, trained models and result data for the paper **Evaluating Document Representations for Content-based Legal Literature Recommendations** ([PDF on Arxiv](http://arxiv.org/abs/2104.13841)). 
 The supplemental material is available for download under [GitHub Releases](https://github.com/malteos/legal-document-similarity/releases).
 
 The qualitative analysis is available as PDF in `/appendix`.
@@ -115,7 +115,7 @@ The full results for all methods are available as
 
 ## How to cite
 
-If you are using our code, please cite [our paper](#TODO):
+If you are using our code, please cite [our paper](http://arxiv.org/abs/2104.13841):
 
 ```bibtex
 @InProceedings{Ostendorff2021,
